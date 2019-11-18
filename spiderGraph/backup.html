@@ -1,0 +1,309 @@
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/ >
+    <title>Smoothed D3.js Radar Chart</title>
+
+    <!-- Google fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:400,300"
+      rel="stylesheet"
+      type="text/css"
+    />
+
+    <!-- D3.js -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"
+      charset="utf-8"
+    ></script>
+
+    <style>
+      body {
+        font-family: "Open Sans", sans-serif;
+        font-size: 11px;
+        font-weight: 300;
+        fill: #242424;
+        text-align: center;
+        text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+        cursor: default;
+      }
+
+      .legend {
+        font-family: "Open Sans", sans-serif;
+        fill: #333333;
+      }
+
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: slategray;
+        stroke-opacity: 0.6;
+        shape-rendering: crispEdges;
+      }
+
+      .tooltip {
+        fill: #333333;
+      }
+
+      .smallMultiples > div {
+        display: inline-block;
+        width: 240px;
+        height: 185px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1>Default chart - Dataset 1</h1>
+      <div class="radarChart1"></div>
+    </div>
+    <div>
+      <h1>Default chart - Dataset 2</h1>
+      <div class="radarChart2"></div>
+    </div>
+    <div>
+      <h1>Dataset 1 - aesthetic options set, hover disabled</h1>
+      <div class="radarChart3"></div>
+    </div>
+    <div>
+      <h1>Dataset 2 - axes ordered and filtered</h1>
+      <div class="radarChart4"></div>
+    </div>
+    <div>
+      <h1>Dataset 1 - custom scales</h1>
+      <div class="radarChart5"></div>
+    </div>
+    <div>
+      <h1>Dataset 2 - small multiples with fixed scales</h1>
+      <div class="smallMultiples"></div>
+    </div>
+
+    <script src="radarChart.js"></script>
+    <script>
+      //////////////////////////////////////////////////////////////
+      //////////////////////// Set-Up //////////////////////////////
+      //////////////////////////////////////////////////////////////
+
+      var margin = { top: 10, right: 10, bottom: 10, left: 10 },
+        width =
+          Math.min(700, window.innerWidth - 10) - margin.left - margin.right,
+        height = Math.min(
+          width,
+          window.innerHeight - margin.top - margin.bottom - 20
+        );
+
+      //////////////////////////////////////////////////////////////
+      ////////////////////////// Data //////////////////////////////
+      //////////////////////////////////////////////////////////////
+
+      var data1 = [
+        {
+          "Battery Life": 0.22,
+          Brand: 0.28,
+          "Contract Cost": 0.29,
+          "Design And Quality": 0.17,
+          "Have Internet Connectivity": 0.22,
+          "Large Screen": 0.02,
+          "Price Of Device": 0.21,
+          "To Be A Smartphone": 0.5
+        },
+        {
+          "Battery Life": 0.27,
+          Brand: 0.16,
+          "Contract Cost": 0.35,
+          "Design And Quality": 0.13,
+          "Have Internet Connectivity": 0.2,
+          "Large Screen": 0.13,
+          "Price Of Device": 0.35,
+          "To Be A Smartphone": 0.38
+        },
+        {
+          "Battery Life": 0.26,
+          Brand: 0.1,
+          "Contract Cost": 0.3,
+          "Design And Quality": 0.14,
+          "Have Internet Connectivity": 0.22,
+          "Large Screen": 0.04,
+          "Price Of Device": 0.41,
+          "To Be A Smartphone": 0.3
+        }
+      ];
+
+      var data2 = [
+        {
+          "inter-block.fanout.type": "fixed",
+          "inter-block.fanout.fixedValue": 256,
+          "intra-block.capacity.type": "variable",
+          "intra-block.capacity.value": 0,
+          "intra-block.utilization.constraint": "none"
+        },
+        {
+          "inter-block.fanout.type": "fixed",
+          "inter-block.fanout.fixedValue": 256,
+          "intra-block.capacity.type": "fixed",
+          "intra-block.capacity.value": 1,
+          "intra-block.utilization.constraint": "leq_capacity"
+        },
+        {
+          "inter-block.fanout.type": "variable",
+          "inter-block.fanout.fixedValue": 0,
+          "intra-block.capacity.type": "fixed",
+          "intra-block.capacity.value": 256,
+          "intra-block.utilization.constraint": "leq_capacity"
+        },
+        {
+          "inter-block.fanout.type": "fixed",
+          "inter-block.fanout.fixedValue": 100,
+          "intra-block.capacity.type": "variable",
+          "intra-block.capacity.value": 0,
+          "intra-block.utilization.constraint": "none"
+        },
+        {
+          "inter-block.fanout.type": "fixed",
+          "inter-block.fanout.fixedValue": 100,
+          "intra-block.capacity.type": "variable",
+          "intra-block.capacity.value": 0,
+          "intra-block.utilization.constraint": "none"
+        },
+        {
+          "inter-block.fanout.type": "fixed",
+          "inter-block.fanout.fixedValue": 256,
+          "intra-block.capacity.type": "fixed",
+          "intra-block.capacity.value": 64,
+          "intra-block.utilization.constraint": "leq_capacity"
+        },
+        {
+          "inter-block.fanout.type": "fixed",
+          "inter-block.fanout.fixedValue": 256,
+          "intra-block.capacity.type": "fixed",
+          "intra-block.capacity.value": 1,
+          "intra-block.utilization.constraint": "leq_capacity"
+        },
+        {
+          "inter-block.fanout.type": "fixed",
+          "inter-block.fanout.fixedValue": 20,
+          "intra-block.capacity.type": "balanced",
+          "intra-block.capacity.value": 0,
+          "intra-block.utilization.constraint": "none"
+        },
+        {
+          "inter-block.fanout.type": "fixed",
+          "inter-block.fanout.fixedValue": 20,
+          "intra-block.capacity.type": "balanced",
+          "intra-block.capacity.value": 0,
+          "intra-block.utilization.constraint": "none"
+        },
+        {
+          "inter-block.fanout.type": "variable",
+          "inter-block.fanout.fixedValue": 0,
+          "intra-block.capacity.type": "fixed",
+          "intra-block.capacity.value": 256,
+          "intra-block.utilization.constraint": "leq_capacity"
+        }
+      ];
+
+      //////////////////////////////////////////////////////////////
+      //////////////////// Draw the Chart //////////////////////////
+      //////////////////////////////////////////////////////////////
+
+      // Defaults
+
+      RadarChart(".radarChart1", data1);
+      RadarChart(".radarChart2", data2);
+
+      // Aesthetic options
+
+      var radarChartOptions = {
+        w: 200,
+        h: 200,
+        roundStrokes: true,
+        axisLabels: false,
+        tickLabels: false,
+        hover: false
+      };
+      RadarChart(".radarChart3", data2, radarChartOptions);
+
+      // Custom fields
+
+      var radarChartOptions = {
+        fields: [
+          "intra-block.capacity.type",
+          "intra-block.utilization.constraint",
+          "inter-block.fanout.type",
+          "inter-block.fanout.fixedValue"
+        ]
+      };
+      RadarChart(".radarChart4", data2, radarChartOptions);
+
+      // Custom fields and axes
+
+      var fields = [
+        "Price Of Device",
+        "Contract Cost",
+        "Large Screen",
+        "Design And Quality"
+      ];
+
+      var scalesAndAxes = {};
+      fields.forEach(function(field) {
+        var o = {};
+        o.scale = d3.scale.linear().domain([0, 0.5]);
+        o.axis = d3.svg
+          .axis()
+          .scale(o.scale)
+          .tickFormat(function(d, i) {
+            if (i != 0) {
+              return d + "";
+            } else {
+              return "";
+            }
+          })
+          .orient("bottom");
+
+        scalesAndAxes[field] = o;
+      });
+
+      var radarChartOptions = {
+        fields: fields,
+        scalesAndAxes: scalesAndAxes
+      };
+      RadarChart(".radarChart5", data1.slice(0, 2), radarChartOptions);
+
+      // Small multiples
+
+      var scalesAndAxes = autoScalesAxes(data2);
+      var radarChartOptions = {
+        w: 150,
+        h: 150,
+        axisLabels: false,
+        tickLabels: false,
+        hover: true,
+        scalesAndAxes: scalesAndAxes
+      };
+      var colors = d3.scale.category20();
+
+      // Create sub-divs for each small multiple
+      var singleMultiple = d3
+        .select(".smallMultiples")
+        .selectAll("div")
+        .data(data2)
+        .enter()
+        .append("div")
+        .attr("id", function(d, i) {
+          return "multiple-" + i;
+        });
+
+      // Add graph
+      singleMultiple.each(function(d, i) {
+        //radarChartOptions.color = function(){ return colors(i); }
+        RadarChart("#multiple-" + i, data2.slice(i, i + 1), radarChartOptions);
+      });
+
+      // Add text
+      singleMultiple.append("div").text(function(d) {
+        return JSON.stringify(d);
+      });
+    </script>
+  </body>
+</html>
+ -->

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/ >
+    <title>Smoothed D3.js Radar Chart</title>
+
+    <!-- Google fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:400,300"
+      rel="stylesheet"
+      type="text/css"
+    />
+
+    <!-- D3.js -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"
+      charset="utf-8"
+    ></script>
+
+    <style>
+      body {
+        font-family: "Open Sans", sans-serif;
+        font-size: 11px;
+        font-weight: 300;
+        fill: #242424;
+        text-align: center;
+        text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+        cursor: default;
+      }
+
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: slategray;
+        stroke-opacity: 0.6;
+        shape-rendering: crispEdges;
+      }
+
+      .tooltip {
+        fill: #333333;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1>Default chart - Dataset 1</h1>
+      <div class="radarChart2"></div>
+    </div>
+
+    <script src="radarChart.js"></script>
+    <script>
+      //////////////////////////////////////////////////////////////
+      ////////////////////////// Data //////////////////////////////
+      //////////////////////////////////////////////////////////////
+
+      var data = {
+        lines: [
+          {
+            id: 0,
+            label: "Customer Segment",
+            tick: [
+              { id: 0, label: "Business", position: 1 },
+              { id: 1, label: "Education", position: 2 },
+              { id: 2, label: "SME", position: 3 },
+              { id: 3, label: "Entertainment", position: 4 },
+              { id: 4, label: "Healthcare", position: 5 }
+            ]
+          },
+          {
+            id: 1,
+            label: "Product",
+            tick: [
+              { id: 0, label: "Courses", position: 1 },
+              { id: 1, label: "Dashboard", position: 2 },
+              { id: 2, label: "Analytics", position: 3 },
+              { id: 3, label: "Paths", position: 4 },
+              { id: 4, label: "Assessments", position: 5 },
+              { id: 5, label: "Channels", position: 6 }
+            ]
+          },
+          {
+            id: 2,
+            label: "Content",
+            tick: [
+              { id: 0, label: "F-end", position: 1 },
+              { id: 1, label: "B-end", position: 2 },
+              { id: 2, label: "Security", position: 3 },
+              { id: 3, label: "Data", position: 4 },
+              { id: 4, label: "Mobile", position: 5 },
+              { id: 5, label: "Offline", position: 6 }
+            ]
+          },
+          {
+            id: 3,
+            label: "Experience",
+            tick: [
+              { id: 0, label: "Rookie", position: 1 },
+              { id: 1, label: "Proficient", position: 2 },
+              { id: 2, label: "Pro", position: 3 },
+              { id: 3, label: "Veteran", position: 4 },
+              { id: 4, label: "Legend", position: 5 }
+            ]
+          },
+          {
+            id: 4,
+            label: "New Business",
+            tick: [
+              { id: 0, label: "SDL Tool", position: 1 },
+              { id: 1, label: "SDL Data", position: 2 },
+              { id: 2, label: "Blogs", position: 3 },
+              { id: 3, label: "Projects", position: 4 },
+              { id: 4, label: "Video Ads", position: 5 }
+            ]
+          },
+          {
+            id: 5,
+            label: "Geographies",
+            tick: [
+              { id: 0, label: "N America", position: 1 },
+              { id: 1, label: "UK", position: 2 },
+              { id: 2, label: "Australia", position: 3 },
+              { id: 3, label: "EMEA", position: 4 },
+              { id: 4, label: "India", position: 5 },
+              { id: 4, label: "S America", position: 5 }
+            ]
+          },
+          {
+            id: 5,
+            label: "Channel",
+            tick: [
+              { id: 0, label: "www", position: 1 },
+              { id: 1, label: "Marketplace", position: 2 },
+              { id: 2, label: "3rd Party", position: 3 },
+              { id: 3, label: "EMEA", position: 4 },
+              { id: 4, label: "Internet", position: 5 },
+              { id: 4, label: "Social", position: 5 }
+            ]
+          }
+        ],
+
+        areas: [
+          {
+            "Customer Segment": "SME",
+            Product: "Dashboard",
+            Content: "Security",
+            Experience: "Proficient",
+            "New Business": "SDL Tool",
+            Geographies: "Australia",
+            Channel: "3rd Party"
+            // "Value Chain": "Features"
+          },
+          {
+            "Customer Segment": "Entertainment",
+            Product: "Assessments",
+            Content: "Mobile",
+            Experience: "Pro",
+            "New Business": "Blogs",
+            Geographies: "India",
+            Channel: "Internet"
+            // "Value Chain": "Channels"
+          },
+          {
+            "Customer Segment": "Healthcare",
+            Product: "Channels",
+            Content: "Offline",
+            Experience: "Veteran",
+            "New Business": "Projects",
+            Geographies: "S America",
+            Channel: "Social"
+            // "Value Chain": "Curation"
+          }
+        ]
+      };
+
+      //////////////////// Draw the Chart //////////////////////////
+
+      // Defaults
+
+      const fields = data.lines.map(line => {
+        return line.label;
+      });
+
+      var scalesAndAxes = {};
+      fields.forEach(function(field, i) {
+        var o = {};
+
+        // console.log(data.lines[i].tick);
+        const newScale = data.lines[i].tick.map(tick => {
+          return tick.label;
+        });
+
+        newScale.unshift("  ");
+
+        // console.log(myScale);
+        console.log(newScale);
+
+        o.scale = d3.scale.ordinal().domain(newScale);
+        o.axis = d3.svg
+          .axis()
+          .scale(o.scale)
+          .tickValues(newScale)
+          .orient("top");
+
+        scalesAndAxes[field] = o;
+      });
+
+      var radarChartOptions = {
+        fields: fields,
+        scalesAndAxes: scalesAndAxes
+      };
+
+      RadarChart(".radarChart2", data.areas, radarChartOptions);
+    </script>
+  </body>
+</html>
